@@ -4,6 +4,18 @@ Minimal reproduction of a regression in knip v6.0.0 where a trailing slash in
 `tsconfig.json`'s `outDir` causes package.json `exports` entries to fail
 source-path resolution, producing false-positive "unused file" reports.
 
+## Reproduce
+
+```bash
+pnpm install
+
+pnpm test:v5   # exit 0 — no issues
+pnpm test:v6   # exit 1 — false positives for src/helpers.ts and src/utils/index.ts
+```
+
+Both `v5/` and `v6/` contain **identical** source code, tsconfig, and
+package.json exports. The only difference is the knip version (5.88.1 vs 6.0.0).
+
 ## The bug
 
 When `tsconfig.json` has `"outDir": "lib/"` (trailing slash) and `package.json`
@@ -41,23 +53,6 @@ preserves the trailing slash, leading to an asymmetric replacement.
 `getToSourcePathsHandler` and `getModuleSourcePathHandler` both do
 `filePath.replace(workspace.outDir, workspace.srcDir)`.
 
-## Reproduce
-
-```bash
-# Install dependencies
-cd v5 && pnpm install && cd ..
-cd v6 && pnpm install && cd ..
-
-# v5 passes — no issues found
-cd v5 && pnpm test   # exit 0
-
-# v6 fails — false positives for src/helpers.ts and src/utils/index.ts
-cd v6 && pnpm test   # exit 1
-```
-
-Both directories contain **identical** source code and tsconfig. The only
-difference is the knip version: v5 uses 5.88.1, v6 uses 6.0.0.
-
 ## Workaround
 
 Remove the trailing slash from `outDir` in `tsconfig.json`:
@@ -72,12 +67,14 @@ This is safe — TypeScript normalizes the path regardless of a trailing slash.
 ## Structure
 
 ```
+package.json            # root — defines test:v5 and test:v6 scripts
+pnpm-workspace.yaml     # declares v5/ and v6/ as workspace packages
 v5/                     # knip 5.88.1 — passes
-v6/                     # knip 6.0.0 — fails (false positives)
-├── package.json        # exports with lib/ subpath entries
+v6/                     # knip 6.0.0  — fails (false positives)
+├── package.json        # identical except knip version
 ├── tsconfig.json       # outDir: "lib/" (trailing slash triggers bug)
 └── src/
-    ├── index.ts        # main entry (has "source" condition, works fine)
+    ├── index.ts        # main entry (has "source" condition — works fine)
     ├── helpers.ts      # only reachable via exports "./helpers" → lib path
     └── utils/
         └── index.ts    # only reachable via exports "./utils" → lib path

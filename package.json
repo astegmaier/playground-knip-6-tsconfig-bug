@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "scripts": {
+    "test:v5": "pnpm --filter knip-v5-trailing-slash-bug test",
+    "test:v6": "pnpm --filter knip-v6-trailing-slash-bug test"
+  }
+}
