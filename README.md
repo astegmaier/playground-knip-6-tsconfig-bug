@@ -1,7 +1,8 @@
 # Knip v6 Bug: `outDir` trailing slash breaks source path mapping
 
 Minimal reproduction of a regression in knip v6.0.0 where a trailing slash in
-`tsconfig.json`'s `outDir` causes false-positive "unused file" reports.
+`tsconfig.json`'s `outDir` causes package.json `exports` entries to fail
+source-path resolution, producing false-positive "unused file" reports.
 
 ## Reproduce
 
@@ -11,19 +12,52 @@ pnpm test:v5   # exit 0 — no issues
 pnpm test:v6   # exit 1 — false positive: src/greet.ts reported as unused
 ```
 
-`v5/` and `v6/` are identical except for the knip version (5.88.1 vs 6.0.0).
+Both `v5/` and `v6/` contain **identical** source code, tsconfig, and
+package.json exports. The only difference is the knip version (5.88.1 vs 6.0.0).
+
+## The bug
+
+When `tsconfig.json` has `"outDir": "lib/"` (trailing slash) and `package.json`
+has an export pointing to a `lib/` path:
+
+```json
+{
+  "exports": {
+    "./greet": "./lib/greet.js"
+  }
+}
+```
+
+Knip needs to map `lib/greet.js` back to `src/greet.ts` to mark the source file
+as an entry point. In v6, this mapping breaks:
+
+| Version | `outDir` resolved to | `srcDir` resolved to | `lib/greet.js` maps to |
+|---------|---------------------|-----------------------|------------------------|
+| v5      | `.../lib`           | `.../src`             | `.../src/greet.ts`     |
+| v6      | `.../lib/`          | `.../src`             | `.../srcgreet.ts`      |
+
+The `/` between `src` and `greet` is swallowed because `outDir` ends with `/`
+but `srcDir` does not, and the mapping uses `String.replace()`.
 
 ## Root cause
 
-Knip maps `lib/greet.js` (from `exports`) back to `src/greet.ts` using
-`String.replace(outDir, srcDir)`. Knip v6 replaced TypeScript's config parser
-with `get-tsconfig`, which preserves the trailing slash in `"outDir": "lib/"`.
-TypeScript's parser stripped it. The mismatch means the replacement produces
-`.../srcgreet.ts` instead of `.../src/greet.ts`.
+Knip v6 replaced TypeScript's config parser with `get-tsconfig`'s
+`parseTsconfig()`. Unlike TypeScript's `ts.parseJsonConfigFileContent()` which
+normalizes paths (stripping trailing slashes), `get-tsconfig` preserves them.
+Knip v6's `loadTSConfig` then calls `path.posix.join(dir, outDir)` which also
+preserves the trailing slash, leading to an asymmetric replacement.
+
+**Affected code:** `packages/knip/src/util/to-source-path.ts` —
+`getToSourcePathsHandler` and `getModuleSourcePathHandler` both do
+`filePath.replace(workspace.outDir, workspace.srcDir)`.
 
 ## Workaround
+
+Remove the trailing slash from `outDir` in `tsconfig.json`:
 
 ```diff
 -    "outDir": "lib/",
 +    "outDir": "lib",
 ```
+
+This is safe — TypeScript normalizes the path regardless of a trailing slash.
