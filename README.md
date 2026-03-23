@@ -17,17 +17,31 @@ package.json exports. The only difference is the knip version (5.88.1 vs 6.0.3).
 
 ## The bug
 
-When `tsconfig.json` has `"outDir": "lib/"` (trailing slash) and `package.json` has an export pointing to a `lib/` path:
+When `tsconfig.json` has `"outDir": "lib/"` (with a trailing slash):
+
+```json
+{
+  "compilerOptions": {
+    "outDir": "lib/",
+    "srcDir": "src/"
+  }
+}
+```
+
+...and `package.json` has an export pointing to a `lib/` path:
 
 ```json
 {
   "exports": {
     "./greet": "./lib/greet.js"
   }
+  // ...
 }
 ```
 
-Knip is unable to map `lib/greet.js` back to `src/greet.ts`, causing it to report `src/greet.ts` as an unused file, even though it's correctly exported and used.
+Knip 6 is unable to map `lib/greet.js` back to `src/greet.ts`, causing it to report `src/greet.ts` as an unused file, even though it's correctly exported and used.
+
+Knip 5 handles this case fine.
 
 ## Workaround
 
