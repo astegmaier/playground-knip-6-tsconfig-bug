@@ -1,6 +1,6 @@
 # Knip v6 Bug: `outDir` trailing slash breaks source path mapping
 
-Minimal reproduction of a regression in knip v6.0.0 where a trailing slash in
+Minimal reproduction of a regression in knip v6 where a trailing slash in
 `tsconfig.json`'s `outDir` causes package.json `exports` entries to fail
 source-path resolution, producing false-positive "unused file" reports.
 
@@ -13,7 +13,7 @@ pnpm test:v6   # exit 1 — false positive: src/greet.ts reported as unused
 ```
 
 Both `v5/` and `v6/` contain **identical** source code, tsconfig, and
-package.json exports. The only difference is the knip version (5.88.1 vs 6.0.0).
+package.json exports. The only difference is the knip version (5.88.1 vs 6.0.3).
 
 ## The bug
 
