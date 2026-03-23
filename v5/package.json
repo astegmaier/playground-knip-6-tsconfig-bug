@@ -1,19 +1,8 @@
 {
   "name": "knip-v5-trailing-slash-bug",
-  "version": "1.0.0",
   "private": true,
-  "main": "lib/index.js",
   "exports": {
-    ".": {
-      "source": "./src/index.ts",
-      "default": "./lib/index.js"
-    },
-    "./utils": {
-      "default": "./lib/utils/index.js"
-    },
-    "./helpers": {
-      "default": "./lib/helpers.js"
-    }
+    "./greet": "./lib/greet.js"
   },
   "scripts": {
     "test": "knip --include files"
