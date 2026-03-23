@@ -20,8 +20,8 @@ importers:
   v6:
     devDependencies:
       knip:
-        specifier: 6.0.0
-        version: 6.0.0
+        specifier: 6.0.3
+        version: 6.0.3
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -319,8 +319,8 @@ packages:
     engines: {node: '>=18.3.0'}
     hasBin: true
 
-  get-tsconfig@4.13.6:
-    resolution: {integrity: sha512-shZT/QMiSHc/YBLxxOkMtgSid5HFoauqCE3/exfsEcwg1WkeqjG+V40yBbBrsD+jW2HDXcs28xOfcbm2jI8Ddw==}
+  get-tsconfig@4.13.7:
+    resolution: {integrity: sha512-7tN6rFgBlMgpBML5j8typ92BKFi2sFQvIdpAqLA2beia5avZDrMs0FLZiM5etShWq5irVyGcGMEA1jcDaK7A/Q==}
 
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -350,8 +350,8 @@ packages:
       '@types/node': '>=18'
       typescript: '>=5.0.4 <7'
 
-  knip@6.0.0:
-    resolution: {integrity: sha512-5jQORgiHvO+9UiqmzZeyixg9Mc56A1Bze3sVI5XXeXy8tdh+CDD1SovjTc9CEKovJoM2NgZ3E58ZozYT8xrepA==}
+  knip@6.0.3:
+    resolution: {integrity: sha512-6Ai+Iv41dVpBYH6mReFejhniWq4eiaKrBw4kghqz2Ew5psQMYEqYxJtXLdj/7vRJ3nVaHpakhYUCKO8p3ftNsQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -636,7 +636,7 @@ snapshots:
     dependencies:
       fd-package-json: 2.0.0
 
-  get-tsconfig@4.13.6:
+  get-tsconfig@4.13.7:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
@@ -672,12 +672,12 @@ snapshots:
       yaml: 2.8.3
       zod: 4.3.6
 
-  knip@6.0.0:
+  knip@6.0.3:
     dependencies:
       '@nodelib/fs.walk': 1.2.8
       fast-glob: 3.3.3
       formatly: 0.3.0
-      get-tsconfig: 4.13.6
+      get-tsconfig: 4.13.7
       jiti: 2.6.1
       minimist: 1.2.8
       oxc-parser: 0.120.0

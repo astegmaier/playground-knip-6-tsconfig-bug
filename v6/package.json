@@ -8,7 +8,7 @@
     "test": "knip --include files"
   },
   "devDependencies": {
-    "knip": "6.0.0",
+    "knip": "6.0.3",
     "typescript": "5.8.3"
   }
 }
