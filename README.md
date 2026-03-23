@@ -42,7 +42,7 @@ This is safe — TypeScript normalizes the path regardless of a trailing slash.
 
 ## Possible Root Cause
 
-_Everything from here down is LLM-generated speculation that I haven't yet verified.
+_Everything from here down is LLM-generated speculation that I haven't yet verified._
 
 Knip needs to map `lib/greet.js` back to `src/greet.ts` to mark the source file
 as an entry point. In v6, this mapping breaks:
